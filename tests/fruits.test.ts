@@ -51,6 +51,14 @@ describe("GET /fruits/:id", () => {
 });
 
 describe("POST /fruits", () => {
+  it("Should respond with status 422 when body is invalid", async () => {
+    const result = await server.post("/fruits").send({
+      naame: "Banana",
+    });
+
+    expect(result.status).toBe(422);
+  });
+
   it("Should respond with status 409 when given fruit already exists", async () => {
     const result = await server.post("/fruits").send({
       name: "Banana",
@@ -61,11 +69,14 @@ describe("POST /fruits", () => {
   });
 
   it("Should respond with status 201 and create new fruit", async () => {
+    const fruitsLength = fruits.length;
+
     const result = await server.post("/fruits").send({
       name: "Acerola",
       price: 400,
     });
 
     expect(result.status).toBe(201);
+    expect(fruits.length).toBe(fruitsLength + 1);
   });
 });
